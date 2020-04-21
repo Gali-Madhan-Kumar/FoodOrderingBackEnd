@@ -1,15 +1,23 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
+import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -35,5 +43,30 @@ public class CustomerController {
         CustomerEntity createdCustomerEntity = customerService.saveCustomer(customerEntity);
         SignupCustomerResponse customerResponse = new SignupCustomerResponse().id(createdCustomerEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupCustomerResponse>(customerResponse, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/customer/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
+        try {
+            byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
+            String decodedText = new String(decode);
+            String[] decodedArray = decodedText.split(":");
+
+            CustomerAuthEntity createdCustomerAuthEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("access-token", createdCustomerAuthEntity.getAccessToken());
+            List<String> header = new ArrayList<>();
+            header.add("access-token");
+            headers.setAccessControlExposeHeaders(header);
+
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setId(createdCustomerAuthEntity.getCustomer().getUuid());
+            loginResponse.setMessage("LOGGED IN SUCCESSFULLY");
+
+            return new ResponseEntity<LoginResponse>(loginResponse, headers, HttpStatus.OK);
+
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException exception) {
+            throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
+        }
     }
 }

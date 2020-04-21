@@ -1,7 +1,7 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
-//import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -133,68 +133,68 @@ public class CustomerControllerTest {
     // ----------------------------- POST /customer/login --------------------------------
 
     //This test case passes when you are able to login successfully.
-//    @Test
-//    public void shouldLoginForValidRequest() throws Exception {
-//        final CustomerAuthEntity createdCustomerAuthEntity = new CustomerAuthEntity();
-//        createdCustomerAuthEntity.setAccessToken("accessToken");
-//        final CustomerEntity customerEntity = new CustomerEntity();
-//        final String customerId = UUID.randomUUID().toString();
-//        customerEntity.setUuid(customerId);
-//        createdCustomerAuthEntity.setCustomer(customerEntity);
-//
-//        when(mockCustomerService.authenticate("9090909090", "CorrectPassword"))
-//                .thenReturn(createdCustomerAuthEntity);
-//
-//        mockMvc
-//                .perform(post("/customer/login")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Basic " + getEncoder().encodeToString("9090909090:CorrectPassword".getBytes())))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("id").value(customerId))
-//                .andExpect(header().exists("access-token"));
-//        verify(mockCustomerService, times(1)).authenticate("9090909090", "CorrectPassword");
-//    }
+    @Test
+    public void shouldLoginForValidRequest() throws Exception {
+        final CustomerAuthEntity createdCustomerAuthEntity = new CustomerAuthEntity();
+        createdCustomerAuthEntity.setAccessToken("accessToken");
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
+        createdCustomerAuthEntity.setCustomer(customerEntity);
+
+        when(mockCustomerService.authenticate("9090909090", "CorrectPassword"))
+                .thenReturn(createdCustomerAuthEntity);
+
+        mockMvc
+                .perform(post("/customer/login")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Basic " + getEncoder().encodeToString("9090909090:CorrectPassword".getBytes())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(customerId))
+                .andExpect(header().exists("access-token"));
+        verify(mockCustomerService, times(1)).authenticate("9090909090", "CorrectPassword");
+    }
 
     //This test case passes when you have handled the exception of trying to login with invalid authorization format.
-//    @Test
-//    public void shouldNotLoginForInvalidAuthorizationFormat() throws Exception {
-//        mockMvc
-//                .perform(post("/customer/login")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Basic " + getEncoder().encodeToString(":".getBytes())))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(jsonPath("code").value("ATH-003"));
-//        verify(mockCustomerService, times(0)).authenticate(anyString(), anyString());
-//    }
+    @Test
+    public void shouldNotLoginForInvalidAuthorizationFormat() throws Exception {
+        mockMvc
+                .perform(post("/customer/login")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Basic " + getEncoder().encodeToString(":".getBytes())))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value("ATH-003"));
+        verify(mockCustomerService, times(0)).authenticate(anyString(), anyString());
+    }
 
     //This test case passes when you have handled the exception of trying to login with a contact number that is not
     // registered yet.
-//    @Test
-//    public void shouldNotLoginIfNoDataPresentForGivenMobileNo() throws Exception {
-//        when(mockCustomerService.authenticate("123", "CorrectPassword"))
-//                .thenThrow(new AuthenticationFailedException("ATH-001", "This contact number does not exist"));
-//        mockMvc
-//                .perform(post("/customer/login")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Basic " + getEncoder().encodeToString("123:CorrectPassword".getBytes())))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(jsonPath("code").value("ATH-001"));
-//        verify(mockCustomerService, times(1)).authenticate("123", "CorrectPassword");
-//    }
+    @Test
+    public void shouldNotLoginIfNoDataPresentForGivenMobileNo() throws Exception {
+        when(mockCustomerService.authenticate("123", "CorrectPassword"))
+                .thenThrow(new AuthenticationFailedException("ATH-001", "This contact number does not exist"));
+        mockMvc
+                .perform(post("/customer/login")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Basic " + getEncoder().encodeToString("123:CorrectPassword".getBytes())))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value("ATH-001"));
+        verify(mockCustomerService, times(1)).authenticate("123", "CorrectPassword");
+    }
 
     //This test case passes when you have handled the exception of trying to login with incorrect password.
-//    @Test
-//    public void shouldNotLoginForWrongPassword() throws Exception {
-//        when(mockCustomerService.authenticate("9090909090", "IncorrectPassword"))
-//                .thenThrow(new AuthenticationFailedException("ATH-002", "Password failed"));
-//        mockMvc
-//                .perform(post("/customer/login")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Basic " + getEncoder().encodeToString("9090909090:IncorrectPassword".getBytes())))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(jsonPath("code").value("ATH-002"));
-//        verify(mockCustomerService, times(1)).authenticate("9090909090", "IncorrectPassword");
-//    }
+    @Test
+    public void shouldNotLoginForWrongPassword() throws Exception {
+        when(mockCustomerService.authenticate("9090909090", "IncorrectPassword"))
+                .thenThrow(new AuthenticationFailedException("ATH-002", "Password failed"));
+        mockMvc
+                .perform(post("/customer/login")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Basic " + getEncoder().encodeToString("9090909090:IncorrectPassword".getBytes())))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value("ATH-002"));
+        verify(mockCustomerService, times(1)).authenticate("9090909090", "IncorrectPassword");
+    }
 
     // ----------------------------- POST /customer/logout --------------------------------
 
