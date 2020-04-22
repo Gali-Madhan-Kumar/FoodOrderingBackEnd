@@ -13,7 +13,7 @@ public class CustomerDao {
 
     @PersistenceContext private EntityManager entityManager;
 
-    public CustomerEntity createCustomer(CustomerEntity customerEntity) {
+    public CustomerEntity createCustomer(final CustomerEntity customerEntity) {
         entityManager.persist(customerEntity);
         return customerEntity;
     }
@@ -24,5 +24,10 @@ public class CustomerDao {
         } catch (NoResultException nre) {
             return null;
         }
+    }
+
+    public CustomerEntity updateCustomer(final CustomerEntity customerEntity) {
+         entityManager.merge(customerEntity);
+         return customerEntity;
     }
 }
