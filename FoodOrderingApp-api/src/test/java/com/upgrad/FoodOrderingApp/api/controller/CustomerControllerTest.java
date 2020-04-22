@@ -199,68 +199,68 @@ public class CustomerControllerTest {
     // ----------------------------- POST /customer/logout --------------------------------
 
     //This test case passes when you are able to logout successfully.
-//    @Test
-//    public void shouldLogoutForValidRequest() throws Exception {
-//        final CustomerAuthEntity createdCustomerAuthEntity = new CustomerAuthEntity();
-//        final CustomerEntity customerEntity = new CustomerEntity();
-//        final String customerId = UUID.randomUUID().toString();
-//        customerEntity.setUuid(customerId);
-//        createdCustomerAuthEntity.setCustomer(customerEntity);
-//        when(mockCustomerService.logout("access-token")).thenReturn(createdCustomerAuthEntity);
-//
-//        mockMvc
-//                .perform(post("/customer/logout")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer access-token"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("id").value(customerId));
-//        verify(mockCustomerService, times(1)).logout("access-token");
-//    }
+    @Test
+    public void shouldLogoutForValidRequest() throws Exception {
+        final CustomerAuthEntity createdCustomerAuthEntity = new CustomerAuthEntity();
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
+        createdCustomerAuthEntity.setCustomer(customerEntity);
+        when(mockCustomerService.logout("access-token")).thenReturn(createdCustomerAuthEntity);
+
+        mockMvc
+                .perform(post("/customer/logout")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer access-token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(customerId));
+        verify(mockCustomerService, times(1)).logout("access-token");
+    }
 
     //This test case passes when you have handled the exception of trying to logout without even logging in.
-//    @Test
-//    public void shouldNotLogoutWhenCustomerIsNotLoggedIn() throws Exception {
-//        when(mockCustomerService.logout("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-001", "Customer is not Logged in."));
-//
-//        mockMvc
-//                .perform(post("/customer/logout")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-001"));
-//        verify(mockCustomerService, times(1)).logout("auth");
-//    }
+    @Test
+    public void shouldNotLogoutWhenCustomerIsNotLoggedIn() throws Exception {
+        when(mockCustomerService.logout("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-001", "Customer is not Logged in."));
+
+        mockMvc
+                .perform(post("/customer/logout")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-001"));
+        verify(mockCustomerService, times(1)).logout("auth");
+    }
 
     //This test case passes when you have handled the exception of trying to logout when you have already logged out.
-//    @Test
-//    public void shouldNotLogoutIfCustomerIsAlreadyLoggedOut() throws Exception {
-//        when(mockCustomerService.logout("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
-//
-//        mockMvc
-//                .perform(post("/customer/logout")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-002"));
-//        verify(mockCustomerService, times(1)).logout("auth");
-//    }
+    @Test
+    public void shouldNotLogoutIfCustomerIsAlreadyLoggedOut() throws Exception {
+        when(mockCustomerService.logout("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
+
+        mockMvc
+                .perform(post("/customer/logout")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-002"));
+        verify(mockCustomerService, times(1)).logout("auth");
+    }
 
     //This test case passes when you have handled the exception of trying to logout while your session is already expired.
-//    @Test
-//    public void shouldNotLogoutIfSessionIsExpired() throws Exception {
-//        when(mockCustomerService.logout("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint."));
-//
-//        mockMvc
-//                .perform(post("/customer/logout")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-003"));
-//        verify(mockCustomerService, times(1)).logout("auth");
-//    }
+    @Test
+    public void shouldNotLogoutIfSessionIsExpired() throws Exception {
+        when(mockCustomerService.logout("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint."));
+
+        mockMvc
+                .perform(post("/customer/logout")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-003"));
+        verify(mockCustomerService, times(1)).logout("auth");
+    }
 
     // ----------------------------- PUT /customer --------------------------------
 

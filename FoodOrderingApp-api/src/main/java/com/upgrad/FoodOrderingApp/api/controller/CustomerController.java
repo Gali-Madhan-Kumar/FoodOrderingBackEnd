@@ -1,12 +1,14 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
+import com.upgrad.FoodOrderingApp.api.model.LogoutResponse;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -53,14 +55,20 @@ public class CustomerController {
             String[] decodedArray = decodedText.split(":");
 
             CustomerAuthEntity createdCustomerAuthEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
+
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setId(createdCustomerAuthEntity.getCustomer().getUuid());
+            loginResponse.setFirstName(createdCustomerAuthEntity.getCustomer().getFirstName());
+            loginResponse.setLastName(createdCustomerAuthEntity.getCustomer().getLastName());
+            loginResponse.setContactNumber(createdCustomerAuthEntity.getCustomer().getContactNumber());
+            loginResponse.setEmailAddress(createdCustomerAuthEntity.getCustomer().getEmailAddress());
+
             HttpHeaders headers = new HttpHeaders();
             headers.add("access-token", createdCustomerAuthEntity.getAccessToken());
             List<String> header = new ArrayList<>();
             header.add("access-token");
             headers.setAccessControlExposeHeaders(header);
 
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setId(createdCustomerAuthEntity.getCustomer().getUuid());
             loginResponse.setMessage("LOGGED IN SUCCESSFULLY");
 
             return new ResponseEntity<LoginResponse>(loginResponse, headers, HttpStatus.OK);
@@ -68,5 +76,13 @@ public class CustomerController {
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException exception) {
             throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
         }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/customer/logout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization") final String athorization) throws AuthorizationFailedException {
+        String accessToken = athorization.split("Bearer ")[1];
+        CustomerAuthEntity createdCustomerAuthEntity = customerService.logout(accessToken);
+        LogoutResponse logoutResponse = new LogoutResponse().id(createdCustomerAuthEntity.getCustomer().getUuid()).message("LOGGED OUT SUCCESSFULLY");
+        return new ResponseEntity<LogoutResponse>(logoutResponse, HttpStatus.OK);
     }
 }
