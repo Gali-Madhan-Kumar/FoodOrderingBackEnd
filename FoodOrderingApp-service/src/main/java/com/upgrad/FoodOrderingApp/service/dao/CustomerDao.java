@@ -30,4 +30,9 @@ public class CustomerDao {
          entityManager.merge(customerEntity);
          return customerEntity;
     }
+
+    public CustomerEntity updateCustomerPassword(final CustomerEntity customerEntity) {
+        entityManager.merge(customerEntity);
+        return customerEntity;
+    }
 }

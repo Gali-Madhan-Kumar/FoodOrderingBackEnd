@@ -362,125 +362,127 @@ public class CustomerControllerTest {
     // ----------------------------- PUT /customer/password --------------------------------
 
     //This test case passes when you are able to update your password successfully.
-//    @Test
-//    public void shouldUpdateCustomerPassword() throws Exception {
-//        final CustomerEntity customerEntity = new CustomerEntity();
-//        final String customerId = UUID.randomUUID().toString();
-//        customerEntity.setUuid(customerId);
-//
-//        when(mockCustomerService.getCustomer("auth")).thenReturn(customerEntity);
-//        when(mockCustomerService.updateCustomerPassword("oldPwd", "newPwd", customerEntity))
-//                .thenReturn(customerEntity);
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("id").value(customerId));
-//        verify(mockCustomerService, times(1)).getCustomer("auth");
-//        verify(mockCustomerService, times(1)).updateCustomerPassword("oldPwd", "newPwd", customerEntity);
-//    }
+    @Test
+    public void shouldUpdateCustomerPassword() throws Exception {
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
+
+        when(mockCustomerService.getCustomer("auth")).thenReturn(customerEntity);
+        when(mockCustomerService.updateCustomerPassword("oldPwd", "newPwd", customerEntity))
+                .thenReturn(customerEntity);
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(customerId));
+        verify(mockCustomerService, times(1)).getCustomer("auth");
+        verify(mockCustomerService, times(1)).updateCustomerPassword("oldPwd", "newPwd", customerEntity);
+    }
 
     //This test case passes when you have handled the exception of trying to update your password but your old password
     // field is empty.
-//    @Test
-//    public void shouldNotUpdateCustomerPasswordIfOldPasswordIsEmpty() throws Exception {
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "auth")
-//                        .content("{\"old_password\":\"\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("code").value("UCR-003"));
-//        verify(mockCustomerService, times(0)).getCustomer(anyString());
-//        verify(mockCustomerService, times(0)).updateCustomer(any());
-//    }
+    @Test
+    public void shouldNotUpdateCustomerPasswordIfOldPasswordIsEmpty() throws Exception {
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "auth")
+                        .content("{\"old_password\":\"\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value("UCR-003"));
+        verify(mockCustomerService, times(0)).getCustomer(anyString());
+        verify(mockCustomerService, times(0)).updateCustomer(any());
+    }
 
     //This test case passes when you have handled the exception of trying to update your password when your new password
     // field is empty
-//    @Test
-//    public void shouldNotUpdateCustomerPasswordIfNewPasswordIsEmpty() throws Exception {
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"\"}"))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("code").value("UCR-003"));
-//        verify(mockCustomerService, times(0)).getCustomer(anyString());
-//        verify(mockCustomerService, times(0)).updateCustomer(any());
-//    }
+    @Test
+    public void shouldNotUpdateCustomerPasswordIfNewPasswordIsEmpty() throws Exception {
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value("UCR-003"));
+        verify(mockCustomerService, times(0)).getCustomer(anyString());
+        verify(mockCustomerService, times(0)).updateCustomer(any());
+    }
 
     //This test case passes when you have handled the exception of trying to update your password but you are not
     // logged in.
-//    @Test
-//    public void shouldNotUpdateCustomerPasswordWhenCustomerIsNotLoggedIn() throws Exception {
-//        when(mockCustomerService.getCustomer("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-001", "Customer is not Logged in."));
-//
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-001"));
-//        verify(mockCustomerService, times(1)).getCustomer("auth");
-//        verify(mockCustomerService, times(0)).updateCustomer(any());
-//    }
+    @Test
+    public void shouldNotUpdateCustomerPasswordWhenCustomerIsNotLoggedIn() throws Exception {
+        when(mockCustomerService.getCustomer("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-001", "Customer is not Logged in."));
+
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-001"));
+        verify(mockCustomerService, times(1)).getCustomer("auth");
+        verify(mockCustomerService, times(0)).updateCustomer(any());
+    }
 
     //This test case passes when you have handled the exception of trying to update your password but you are already
     // logged out.
-//    public void shouldUpdateCustomerPasswordIfCustomerIsAlreadyLoggedOut() throws Exception {
-//        when(mockCustomerService.getCustomer("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
-//
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-002"));
-//        verify(mockCustomerService, times(1)).getCustomer("auth");
-//        verify(mockCustomerService, times(0)).updateCustomer(any());
-//    }
+    @Test
+    public void shouldUpdateCustomerPasswordIfCustomerIsAlreadyLoggedOut() throws Exception {
+        when(mockCustomerService.getCustomer("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
+
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-002"));
+        verify(mockCustomerService, times(1)).getCustomer("auth");
+        verify(mockCustomerService, times(0)).updateCustomer(any());
+    }
 
     //This test case passes when you have handled the exception of trying to update your password but your session is
     // already expired.
-//    public void shouldUpdateCustomerPasswordIfSessionIsExpired() throws Exception {
-//        when(mockCustomerService.getCustomer("auth"))
-//                .thenThrow(new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint."));
-//
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isForbidden())
-//                .andExpect(jsonPath("code").value("ATHR-003"));
-//        verify(mockCustomerService, times(1)).getCustomer("auth");
-//        verify(mockCustomerService, times(0)).updateCustomer(any());
-//    }
+    @Test
+    public void shouldUpdateCustomerPasswordIfSessionIsExpired() throws Exception {
+        when(mockCustomerService.getCustomer("auth"))
+                .thenThrow(new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint."));
+
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("code").value("ATHR-003"));
+        verify(mockCustomerService, times(1)).getCustomer("auth");
+        verify(mockCustomerService, times(0)).updateCustomer(any());
+    }
 
     //This test case passes when you have handled the exception of trying to update your password while your new
     // password is weak.
-//    @Test
-//    public void shouldNotUpdateCustomerPasswordIfNewPasswordDoesNotFollowRecommendedPasswordFormat() throws Exception {
-//        final CustomerEntity customerEntity = new CustomerEntity();
-//        when(mockCustomerService.getCustomer("auth")).thenReturn(customerEntity);
-//        when(mockCustomerService.updateCustomerPassword("oldPwd", "newPwd", customerEntity))
-//                .thenThrow(new UpdateCustomerException("UCR-001", "Weak password!"));
-//        mockMvc
-//                .perform(put("/customer/password")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer auth")
-//                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("code").value("UCR-001"));
-//        verify(mockCustomerService, times(1)).getCustomer("auth");
-//        verify(mockCustomerService, times(1)).updateCustomerPassword("oldPwd", "newPwd", customerEntity);
-//    }
+    @Test
+    public void shouldNotUpdateCustomerPasswordIfNewPasswordDoesNotFollowRecommendedPasswordFormat() throws Exception {
+        final CustomerEntity customerEntity = new CustomerEntity();
+        when(mockCustomerService.getCustomer("auth")).thenReturn(customerEntity);
+        when(mockCustomerService.updateCustomerPassword("oldPwd", "newPwd", customerEntity))
+                .thenThrow(new UpdateCustomerException("UCR-001", "Weak password!"));
+        mockMvc
+                .perform(put("/customer/password")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer auth")
+                        .content("{\"old_password\":\"oldPwd\", \"new_password\":\"newPwd\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value("UCR-001"));
+        verify(mockCustomerService, times(1)).getCustomer("auth");
+        verify(mockCustomerService, times(1)).updateCustomerPassword("oldPwd", "newPwd", customerEntity);
+    }
 
 }

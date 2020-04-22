@@ -7,6 +7,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
+import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,9 +133,27 @@ public class CustomerService {
         return customerAuthEntity.getCustomer();
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity updateCustomer(final CustomerEntity customerEntity) {
         return customerDao.updateCustomer(customerEntity);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerEntity updateCustomerPassword(final String oldPassword, final String newPassword, final CustomerEntity customerEntity) throws UpdateCustomerException {
+        if (!isValidPassword(newPassword)) {
+            throw new UpdateCustomerException("UCR-001", "Weak password!");
+        }
+        String oldEncryptedPassword = PasswordCryptographyProvider.encrypt(oldPassword, customerEntity.getSalt());
+        if (!oldEncryptedPassword.equals(customerEntity.getPassword())) {
+            throw new UpdateCustomerException("UCR-004", "Incorrect old password!");
+        }
+        String[] encryptedText = passwordCryptographyProvider.encrypt(newPassword);
+        customerEntity.setSalt(encryptedText[0]);
+        customerEntity.setPassword(encryptedText[1]);
+        return customerDao.updateCustomerPassword(customerEntity);
+    }
+
+
 
 
 }
