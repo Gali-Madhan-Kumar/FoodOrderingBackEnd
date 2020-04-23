@@ -20,12 +20,12 @@ import java.util.Base64;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/")
 public class CustomerController {
 
     @Autowired private CustomerService customerService;
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/customer/signup", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signup(@RequestBody(required = false) final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
 
@@ -45,6 +45,7 @@ public class CustomerController {
         return new ResponseEntity<SignupCustomerResponse>(customerResponse, HttpStatus.CREATED);
     }
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/customer/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
         try {
@@ -76,6 +77,7 @@ public class CustomerController {
         }
     }
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/customer/logout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization") final String athorization) throws AuthorizationFailedException {
         String accessToken = athorization.split("Bearer ")[1];
@@ -84,6 +86,7 @@ public class CustomerController {
         return new ResponseEntity<LogoutResponse>(logoutResponse, HttpStatus.OK);
     }
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT, path = "/customer", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UpdateCustomerResponse> update(@RequestBody(required = false) final UpdateCustomerRequest updateCustomerRequest, @RequestHeader("authorization") final String authorization) throws UpdateCustomerException, AuthorizationFailedException {
 
@@ -108,6 +111,7 @@ public class CustomerController {
 
     }
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT, path = "/customer/password", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UpdatePasswordResponse> changePassword(@RequestBody(required = false) final UpdatePasswordRequest updatePasswordRequest, @RequestHeader("authorization") final String authorization) throws UpdateCustomerException, AuthorizationFailedException {
 
