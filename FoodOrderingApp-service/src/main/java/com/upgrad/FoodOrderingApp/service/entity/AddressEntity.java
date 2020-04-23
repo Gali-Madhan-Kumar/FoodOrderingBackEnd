@@ -14,6 +14,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "address")
+@NamedQueries(
+        @NamedQuery(
+                name = "getAllAddressesOfCustomer",
+                query= "select address from AddressEntity address where address.customer.uuid=:uuid" )
+)
 public class AddressEntity implements Serializable {
 
     @Id
@@ -75,7 +80,7 @@ public class AddressEntity implements Serializable {
         return flatBuildingNumber;
     }
 
-    public void setFlatBuildingNumber(String flatBuildingNumber) {
+    public void setFlatBuilNo(String flatBuildingNumber) {
         this.flatBuildingNumber = flatBuildingNumber;
     }
 

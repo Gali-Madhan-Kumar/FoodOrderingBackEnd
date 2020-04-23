@@ -34,6 +34,15 @@ public class StateEntity implements Serializable {
     @Column(name = "state_name")
     private String stateName;
 
+    public StateEntity(@Size(max = 200) @NotNull String uuid, @Size(max = 30) String stateName) {
+        this.uuid = uuid;
+        this.stateName = stateName;
+    }
+
+    public StateEntity() {
+
+    }
+
     public Integer getId() {
         return id;
     }

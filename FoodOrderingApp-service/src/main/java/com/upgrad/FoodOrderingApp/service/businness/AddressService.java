@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AddressService {
 
@@ -60,5 +62,9 @@ public class AddressService {
             }
         }
         return true;
+    }
+
+    public List<AddressEntity> getAllAddress(final CustomerEntity customerEntity ) {
+        return customerEntity.getAddresses();
     }
 }
