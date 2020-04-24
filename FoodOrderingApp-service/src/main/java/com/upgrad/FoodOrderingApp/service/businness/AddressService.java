@@ -8,6 +8,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,27 @@ public class AddressService {
 
     public List<AddressEntity> getAllAddress(final CustomerEntity customerEntity ) {
         return customerEntity.getAddresses();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AddressEntity deleteAddress(final AddressEntity addressEntity) {
+        return addressDao.deleteAddress(addressEntity);
+    }
+
+    public AddressEntity getAddressByUUID(final String addressId, final CustomerEntity customerEntity) throws AuthorizationFailedException, AddressNotFoundException {
+        if (!addressDao.getAddressByUUID(addressId).getCustomer().getUuid().equals(customerEntity.getUuid())) {
+            throw new AuthorizationFailedException("ATHR-004", "You are not authorized to view/update/delete any one else's address");
+        }
+        if (addressId.equals("")) {
+            throw new AddressNotFoundException("ANF-005", "Address id can not be empty");
+        }
+        if (addressDao.getAddressByUUID(addressId) == null) {
+            throw new AddressNotFoundException("ANF-003", "No address by this id");
+        }
+        return addressDao.getAddressByUUID(addressId);
+    }
+
+    public List<StateEntity> getAllStates() {
+        return stateDao.getAllStates();
     }
 }

@@ -14,11 +14,16 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "address")
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(
                 name = "getAllAddressesOfCustomer",
-                query= "select address from AddressEntity address where address.customer.uuid=:uuid" )
-)
+                query= "select address from AddressEntity address where address.customer.uuid=:uuid"
+        ),
+        @NamedQuery(
+                name = "addressByUUID",
+                query = "select address from AddressEntity address where address.uuid=:addressId"
+        )
+})
 public class AddressEntity implements Serializable {
 
     @Id
