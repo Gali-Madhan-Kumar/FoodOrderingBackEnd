@@ -2,11 +2,9 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.AddressDao;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerAddressDao;
+import com.upgrad.FoodOrderingApp.service.dao.OrdersDao;
 import com.upgrad.FoodOrderingApp.service.dao.StateDao;
-import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
+import com.upgrad.FoodOrderingApp.service.entity.*;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
@@ -23,6 +21,8 @@ public class AddressService {
     @Autowired private StateDao stateDao;
 
     @Autowired private AddressDao addressDao;
+
+    @Autowired private OrdersDao ordersDao;
 
     @Autowired private CustomerAddressDao customerAddressDao;
 
@@ -71,7 +71,12 @@ public class AddressService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public AddressEntity deleteAddress(final AddressEntity addressEntity) {
-        return addressDao.deleteAddress(addressEntity);
+        final List<OrderEntity> orders = ordersDao.getAllOrdersByAddress(addressEntity);
+        if (orders == null || orders.isEmpty()) {
+            return addressDao.deleteAddress(addressEntity);
+        }
+        addressEntity.setActive(0);
+        return addressDao.updateAddress(addressEntity);
     }
 
     public AddressEntity getAddressByUUID(final String addressId, final CustomerEntity customerEntity) throws AuthorizationFailedException, AddressNotFoundException {

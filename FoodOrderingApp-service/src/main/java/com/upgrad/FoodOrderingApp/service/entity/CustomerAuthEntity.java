@@ -34,6 +34,7 @@ public class CustomerAuthEntity implements Serializable {
     private String uuid;
 
     @ManyToOne
+    @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
