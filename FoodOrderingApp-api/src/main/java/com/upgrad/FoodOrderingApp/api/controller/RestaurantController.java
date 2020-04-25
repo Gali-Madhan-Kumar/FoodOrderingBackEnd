@@ -3,9 +3,6 @@ package com.upgrad.FoodOrderingApp.api.controller;
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.CategoryService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
-import com.upgrad.FoodOrderingApp.service.dao.AddressDao;
-import com.upgrad.FoodOrderingApp.service.dao.StateDao;
-import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
@@ -18,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
@@ -57,14 +57,11 @@ public class RestaurantController {
 
             final List<CategoryEntity> categoryEntityList = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid());
 
-            StringBuilder stringBuilder = new StringBuilder();
-            
+            List<String> categoriesList = new ArrayList<>();
             for (CategoryEntity categoryEntity : categoryEntityList) {
-                stringBuilder.append(categoryEntity.getCategoryName()).append(", ");
+                categoriesList.add(categoryEntity.getCategoryName());
             }
-            if (stringBuilder.length() > 0) {
-                stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-            }
+            String categoriesJoinedString = String.join(", ", categoriesList);
 
             final RestaurantList restaurantList = new RestaurantList()
                     .id(UUID.fromString(restaurantEntity.getUuid()))
@@ -74,7 +71,7 @@ public class RestaurantController {
                     .customerRating(restaurantEntity.getCustomerRating())
                     .photoURL(restaurantEntity.getPhotoUrl())
                     .address(restaurantDetailsResponseAddress)
-                    .categories(stringBuilder.toString());
+                    .categories(categoriesJoinedString);
             restaurantListResponse.addRestaurantsItem(restaurantList);
         }
         return new ResponseEntity<RestaurantListResponse>(restaurantListResponse, HttpStatus.OK);
