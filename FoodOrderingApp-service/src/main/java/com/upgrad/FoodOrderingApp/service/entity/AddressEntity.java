@@ -1,9 +1,5 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -22,9 +18,22 @@ import java.io.Serializable;
         @NamedQuery(
                 name = "addressByUUID",
                 query = "select address from AddressEntity address where address.uuid=:addressId"
-        )
+        ),
 })
 public class AddressEntity implements Serializable {
+
+    public AddressEntity(@Size(max = 200) @NotNull String uuid, @Size(max = 255) String flatBuildingNumber, @Size(max = 255) String locality, @Size(max = 30) String city, @Size(max = 30) String pincode, StateEntity state) {
+        this.uuid = uuid;
+        this.flatBuildingNumber = flatBuildingNumber;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.state = state;
+    }
+
+    public AddressEntity() {
+
+    }
 
     @Id
     @Column(name = "id")
@@ -135,21 +144,6 @@ public class AddressEntity implements Serializable {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return new EqualsBuilder().append(this, obj).isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(this).hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }
